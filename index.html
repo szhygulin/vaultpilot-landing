@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VaultPilot — Hardware-verified DeFi for AI agents</title>
+<meta name="description" content="VaultPilot MCP lets AI agents read your on-chain positions and prepare transactions you sign on your Ledger. Designed for when the AI can be compromised — only your hardware wallet is trusted.">
+<meta property="og:title" content="VaultPilot — Hardware-verified DeFi for AI agents">
+<meta property="og:description" content="The agent proposes, you approve on your Ledger. Layered defenses so a compromised AI can't drain your wallet.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg: #0b0d10;
+    --bg-elev: #14171c;
+    --fg: #e9edf2;
+    --fg-dim: #9aa4b2;
+    --accent: #f5b51c;
+    --accent-dim: #ad7c00;
+    --rule: #232831;
+    --code-bg: #0f1216;
+    --good: #3ec46a;
+    --bad: #e25656;
+    --max: 980px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.92em;
+    border: 1px solid var(--rule);
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 1em 1.2em;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+  pre code { background: transparent; padding: 0; border: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  section { padding: 64px 0; border-top: 1px solid var(--rule); }
+  section:first-of-type { border-top: none; }
+  h1 { font-size: 2.4rem; line-height: 1.2; margin: 0 0 16px; letter-spacing: -0.02em; }
+  h2 { font-size: 1.6rem; margin: 0 0 24px; letter-spacing: -0.01em; }
+  h3 { font-size: 1.1rem; margin: 24px 0 8px; }
+  p { margin: 0 0 16px; }
+  .lede { font-size: 1.18rem; color: var(--fg-dim); max-width: 640px; }
+
+  /* Hero */
+  header.hero { padding: 96px 0 64px; }
+  .badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .cta-row { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #1a1402; }
+  .btn-primary:hover { background: #ffc83a; text-decoration: none; }
+  .btn-secondary { background: transparent; border-color: var(--rule); color: var(--fg); }
+  .btn-secondary:hover { border-color: var(--fg-dim); text-decoration: none; }
+
+  /* Threat-model panel */
+  .panel {
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 24px 28px;
+  }
+  .panel + .panel { margin-top: 16px; }
+
+  /* How-it-works flow */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 28px;
+  }
+  .flow .step {
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .flow .step .num {
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .flow .step h3 { margin: 0 0 6px; font-size: 1rem; }
+  .flow .step p { margin: 0; color: var(--fg-dim); font-size: 0.94rem; }
+  @media (max-width: 700px) { .flow { grid-template-columns: 1fr; } }
+
+  /* Coverage table */
+  table.coverage {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    margin-top: 12px;
+  }
+  table.coverage th, table.coverage td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  table.coverage th { color: var(--fg-dim); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  table.coverage tr:last-child td { border-bottom: none; }
+  table.coverage td.label { white-space: nowrap; color: var(--accent); font-weight: 600; }
+
+  /* Defense list */
+  ul.defenses {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+  }
+  ul.defenses li {
+    padding-left: 24px;
+    position: relative;
+    color: var(--fg-dim);
+    font-size: 0.95rem;
+  }
+  ul.defenses li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--good);
+    font-weight: 700;
+  }
+  ul.defenses li strong { color: var(--fg); font-weight: 600; }
+  @media (max-width: 700px) { ul.defenses { grid-template-columns: 1fr; } }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 32px 0 48px;
+    color: var(--fg-dim);
+    font-size: 0.92rem;
+  }
+  footer .links { display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 12px; }
+  footer .links a { color: var(--fg); }
+  footer .fineprint { color: var(--fg-dim); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">Open source · MIT</div>
+    <h1>Hardware-verified DeFi for AI agents.</h1>
+    <p class="lede">The agent proposes, you approve on your Ledger. VaultPilot MCP is built for the realistic case where the AI, the MCP server, or your computer can be compromised — only your hardware wallet is trusted, and every transaction is cryptographically bound across every layer so tampering produces a visible mismatch on the device screen.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/szhygulin/vaultpilot-mcp">View on GitHub</a>
+      <a class="btn btn-secondary" href="https://www.npmjs.com/package/vaultpilot-mcp">Install from npm</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Why this exists</h2>
+    <p>An AI agent that holds your private keys is a private key on the internet. An AI agent connected to your wallet through an MCP server is the same problem in slower motion — a malicious prompt, a hijacked tool call, or a compromised dependency can quietly rewrite a recipient address or smuggle in an unbounded approval, and a software wallet has no independent eyes on what gets signed.</p>
+    <p>VaultPilot draws the trust boundary at the only place that really holds: <strong>the hardware wallet's screen</strong>. Every transaction the agent prepares is rendered to you in human-readable form, then re-rendered on the Ledger device itself. If anything between the two has been tampered with — a swapped recipient, a different chain, an inflated amount — the device shows you bytes that don't match what you asked for, and you reject before signing.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>How it works</h2>
+    <div class="flow">
+      <div class="step">
+        <div class="num">01 / READ</div>
+        <h3>Agent reads on-chain state</h3>
+        <p>Portfolio, lending positions, staking, swap quotes — all read-only via your configured RPCs. No keys involved.</p>
+      </div>
+      <div class="step">
+        <div class="num">02 / PREPARE</div>
+        <h3>Server builds an unsigned tx</h3>
+        <p>VaultPilot MCP prepares the transaction, decodes its calldata, and emits a verification block: a one-line action summary, the function being called, every argument, and a payload hash you'll see again on-device.</p>
+      </div>
+      <div class="step">
+        <div class="num">03 / APPROVE</div>
+        <h3>You sign on Ledger</h3>
+        <p>EVM goes to Ledger Live over WalletConnect; TRON and Solana go to a directly-connected Ledger over USB. The device clear-signs known protocols, blind-signs everything else with a hash you match against the chat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Layered defenses</h2>
+    <p>VaultPilot assumes the AI agent, MCP server, and host computer can all be compromised. Single-layer attacks are caught by overlapping checks; coordinated multi-layer attacks are narrowed by every layer that still works.</p>
+    <ul class="defenses">
+      <li><strong>Server-side prepare↔send fingerprint</strong> — the bytes the user previewed are the bytes that get signed.</li>
+      <li><strong>Independent 4byte selector check</strong> — a public registry built from unrelated on-chain traffic corroborates the function name.</li>
+      <li><strong>Agent-side ABI decode + hash recompute</strong> — the agent re-derives the pre-sign hash from the calldata it sees.</li>
+      <li><strong>On-device clear-sign or blind-sign-hash match</strong> — the Ledger screen is the final anchor.</li>
+      <li><strong>WalletConnect session-topic cross-check</strong> — binds the WC session to the user's real Ledger Live install.</li>
+      <li><strong>previewToken / userDecision gate</strong> — explicit approval per transaction, no implicit chaining.</li>
+      <li><strong>Optional second-LLM verification</strong> — independently re-decodes high-value sends from the raw bytes.</li>
+      <li><strong>Companion preflight skill</strong> — agent runs invariants regardless of what the MCP server says it ran.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Coverage</h2>
+    <table class="coverage">
+      <tr>
+        <th>Chains</th>
+        <td>Ethereum, Arbitrum, Polygon, Base, Optimism (EVM via Ledger Live + WalletConnect); TRON and Solana via Ledger USB HID.</td>
+      </tr>
+      <tr>
+        <th>Lending</th>
+        <td>Aave V3, Compound V3, Morpho Blue (EVM); MarginFi (Solana); Kamino in flight.</td>
+      </tr>
+      <tr>
+        <th>Staking</th>
+        <td>Lido, EigenLayer (EVM); TRON Stake 2.0; Marinade, Jito reads, native SOL delegation (Solana).</td>
+      </tr>
+      <tr>
+        <th>LP / Swap</th>
+        <td>Uniswap V3 LP positions; LiFi-aggregated EVM swaps and EVM↔Solana cross-chain bridges; Jupiter v6 on Solana.</td>
+      </tr>
+      <tr>
+        <th>Sends</th>
+        <td>Native + ERC-20 on EVM; native + TRC-20 on TRON; SOL + SPL on Solana with durable-nonce protection.</td>
+      </tr>
+      <tr>
+        <th>Risk tooling</th>
+        <td>Liquidation alerts, contract verification, privileged-role enumeration, DefiLlama-backed protocol risk score, market incident scan.</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Install</h2>
+    <pre><code>npm install -g vaultpilot-mcp
+vaultpilot-mcp-setup</code></pre>
+    <p>The setup wizard walks you through RPC endpoints, optional API keys, Ledger pairing (WalletConnect for EVM, USB for TRON / Solana), and writes <code>~/.vaultpilot-mcp/config.json</code>. It will also detect Claude Desktop, Claude Code, and Cursor on your machine and offer to register itself in their MCP-server config automatically.</p>
+    <p>For agent-side hardening (strongly recommended), also install the companion preflight skill:</p>
+    <pre><code>git clone https://github.com/szhygulin/vaultpilot-skill.git \
+  ~/.claude/skills/vaultpilot-preflight</code></pre>
+    <p>The skill makes the bytes-decode and hash-recompute invariants run at the agent layer regardless of what the MCP server says it ran. The MCP emits a one-shot notice until the skill is installed.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Honest limits</h2>
+    <p>Hardware-verified does not mean infallible. VaultPilot's threat model is documented openly in <a href="https://github.com/szhygulin/vaultpilot-mcp/blob/main/SECURITY.md">SECURITY.md</a>, including the cases the layered defenses can degrade against — coordinated agent + server compromise on a blind-sign chain, a fully owned Ledger Live host swapping the WalletConnect session, oracle drift on lending markets. The point of writing it down is that you can decide what you trust before approving a 6-figure send, not after.</p>
+    <p>Software wallets and Ledger live in different security tiers. Software-wallet support is on the roadmap (MetaMask Mobile via WalletConnect) and will be clearly labelled as the weaker anchor — the existing pre-sign defenses still apply, but the on-device cryptographic binding does not.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/szhygulin/vaultpilot-mcp">vaultpilot-mcp</a>
+      <a href="https://github.com/szhygulin/vaultpilot-skill">vaultpilot-skill</a>
+      <a href="https://www.npmjs.com/package/vaultpilot-mcp">npm</a>
+      <a href="https://github.com/szhygulin/vaultpilot-mcp/blob/main/SECURITY.md">Security model</a>
+      <a href="https://github.com/szhygulin/vaultpilot-mcp/issues">Issues</a>
+    </div>
+    <div class="fineprint">MIT licensed. Self-custodial — keys never leave your hardware wallet. Not affiliated with Ledger SAS or Anthropic.</div>
+  </div>
+</footer>
+
+</body>
+</html>
