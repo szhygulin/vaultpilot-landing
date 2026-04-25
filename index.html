@@ -119,14 +119,6 @@
 
 <section>
   <div class="wrap">
-    <h2>Why this exists</h2>
-    <p>An AI agent that holds your private keys is a private key on the internet. An AI agent connected to your wallet through an MCP server is the same problem in slower motion — a malicious prompt, a hijacked tool call, or a compromised dependency can quietly rewrite a recipient address or smuggle in an unbounded approval, and a software wallet has no independent eyes on what gets signed.</p>
-    <p>VaultPilot draws the trust boundary at the only place that really holds: <strong>the hardware wallet's screen</strong>. Every transaction the agent prepares is rendered to you in human-readable form, then re-rendered on the Ledger device itself. If anything between the two has been tampered with — a swapped recipient, a different chain, an inflated amount — the device shows you bytes that don't match what you asked for, and you reject before signing.</p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
     <h2>How it works</h2>
     <div class="flow">
       <div class="step">
@@ -150,6 +142,14 @@
         <p>EVM via Ledger Live over WalletConnect; TRON and Solana via direct USB. The device clear-signs known protocols and blind-signs the rest with a hash matching the agent's preview.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Why this exists</h2>
+    <p>An AI agent that holds your private keys is a private key on the internet. An AI agent connected to your wallet through an MCP server is the same problem in slower motion — a malicious prompt, a hijacked tool call, or a compromised dependency can quietly rewrite a recipient address or smuggle in an unbounded approval, and a software wallet has no independent eyes on what gets signed.</p>
+    <p>VaultPilot draws the trust boundary at the only place that really holds: <strong>the hardware wallet's screen</strong>. Every transaction the agent prepares is rendered to you in human-readable form, then re-rendered on the Ledger device itself. If anything between the two has been tampered with — a swapped recipient, a different chain, an inflated amount — the device shows you bytes that don't match what you asked for, and you reject before signing.</p>
   </div>
 </section>
 
