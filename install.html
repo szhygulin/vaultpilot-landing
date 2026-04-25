@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install VaultPilot — Three paths · setup wizard · MCP-client wiring</title>
+<meta name="description" content="Install VaultPilot MCP from a bundled binary, npm, or source. Setup wizard, Ledger pairing, MCP-client config for Claude Desktop / Claude Code / Cursor.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap row">
+    <a class="brand" href="index.html">VaultPilot</a>
+    <span class="grow"></span>
+    <a href="index.html">Home</a>
+    <a href="https://github.com/szhygulin/vaultpilot-mcp">GitHub</a>
+    <a href="https://www.npmjs.com/package/vaultpilot-mcp">npm</a>
+  </div>
+</nav>
+
+<header class="hero" style="padding-top:64px;padding-bottom:32px;">
+  <div class="wrap">
+    <h1>Installing VaultPilot</h1>
+    <p class="lede">Three install paths — pick whichever matches your setup. All three end at the same place: a <code>vaultpilot-mcp</code> server binary your MCP client runs, plus a one-time setup wizard that writes the config file.</p>
+  </div>
+</header>
+
+<section style="padding-top:0;border-top:none;">
+  <div class="wrap">
+    <table class="compact">
+      <tr><th>Path</th><th>Best for</th><th>Prerequisites</th></tr>
+      <tr><td>A. Bundled binary</td><td>Non-developers, anyone without Node.js</td><td>None — runtime is bundled</td></tr>
+      <tr><td>B. From npm</td><td>Developers with Node.js already installed</td><td>Node.js ≥ 18.17, npm</td></tr>
+      <tr><td>C. From source</td><td>Contributors, anyone who wants to build their own</td><td>Node.js ≥ 18.17, npm, git, OS build toolchain</td></tr>
+    </table>
+    <p>Sections 3–9 (setup wizard, verification, MCP-client wiring, Ledger pairing, update, uninstall, troubleshooting) apply to all three paths.</p>
+    <ul class="toc">
+      <li><a href="#path-a">Path A — Bundled binary</a></li>
+      <li><a href="#path-b">Path B — From npm</a></li>
+      <li><a href="#path-c">Path C — From source</a></li>
+      <li><a href="#wizard">3. Setup wizard</a></li>
+      <li><a href="#verify">4. Verify it works</a></li>
+      <li><a href="#wiring">5. Manual MCP-client wiring</a></li>
+      <li><a href="#pair">6. Pair Ledger</a></li>
+      <li><a href="#update">7. Update</a></li>
+      <li><a href="#uninstall">8. Uninstall</a></li>
+      <li><a href="#troubleshoot">9. Troubleshooting</a></li>
+    </ul>
+  </div>
+</section>
+
+<section id="path-a">
+  <div class="wrap">
+    <h2>Path A — Bundled binary</h2>
+
+    <h3>A1. Download the binaries for your OS</h3>
+    <p>Open the <a href="https://github.com/szhygulin/vaultpilot-mcp/releases/latest">latest release page</a> and download <strong>two</strong> files for your platform:</p>
+    <table class="compact">
+      <tr><th>Platform</th><th>Server binary</th><th>Setup wizard</th></tr>
+      <tr><td>Linux x64</td><td><code>vaultpilot-mcp-linux-x64</code></td><td><code>vaultpilot-mcp-setup-linux-x64</code></td></tr>
+      <tr><td>macOS Apple silicon (M1/M2/M3)</td><td><code>vaultpilot-mcp-macos-arm64</code></td><td><code>vaultpilot-mcp-setup-macos-arm64</code></td></tr>
+      <tr><td>macOS Intel</td><td><code>vaultpilot-mcp-macos-x64</code></td><td><code>vaultpilot-mcp-setup-macos-x64</code></td></tr>
+      <tr><td>Windows x64</td><td><code>vaultpilot-mcp-windows-x64.exe</code></td><td><code>vaultpilot-mcp-setup-windows-x64.exe</code></td></tr>
+    </table>
+    <p>Move both files into a stable location — somewhere they will live permanently and your MCP client can reach them. Suggested paths:</p>
+    <ul>
+      <li><strong>macOS / Linux:</strong> <code>~/.local/bin/</code></li>
+      <li><strong>Windows:</strong> <code>%LOCALAPPDATA%\Programs\vaultpilot-mcp\</code></li>
+    </ul>
+    <p>Create the directory first if it doesn't exist (<code>mkdir -p ~/.local/bin</code> on Unix; right-click → New folder on Windows).</p>
+
+    <h3>A2. Make the binaries runnable</h3>
+
+    <h4>macOS</h4>
+    <p>macOS Gatekeeper blocks unsigned binaries by default. Two options to get past it:</p>
+    <p><strong>Option A — strip the quarantine attribute (one-time, command-line)</strong></p>
+    <pre><code>chmod +x ~/.local/bin/vaultpilot-mcp-macos-* ~/.local/bin/vaultpilot-mcp-setup-macos-*
+xattr -d com.apple.quarantine ~/.local/bin/vaultpilot-mcp-macos-* 2>/dev/null
+xattr -d com.apple.quarantine ~/.local/bin/vaultpilot-mcp-setup-macos-* 2>/dev/null</code></pre>
+    <p><strong>Option B — Finder right-click → Open</strong></p>
+    <p>Right-click the file in Finder, choose <strong>Open</strong>, click <strong>Open</strong> in the "unidentified developer" dialog. Repeat for both files. macOS remembers your choice; you only do this once per file.</p>
+    <div class="callout">If you see <em>"Apple could not verify ... is free of malware"</em>, that's Gatekeeper warning you. The binaries are built in our public CI from this repo's source — you can verify by reading <a href="https://github.com/szhygulin/vaultpilot-mcp/blob/main/.github/workflows/release-binaries.yml"><code>.github/workflows/release-binaries.yml</code></a> and matching the build provenance against the asset filenames. <strong>Code-signing is on the roadmap but not shipped yet.</strong></div>
+
+    <h4>Linux</h4>
+    <pre><code>chmod +x ~/.local/bin/vaultpilot-mcp-linux-x64 ~/.local/bin/vaultpilot-mcp-setup-linux-x64</code></pre>
+    <p>If you plan to use TRON or Solana hardware-signing flows, you also need <a href="https://github.com/LedgerHQ/udev-rules">Ledger udev rules</a>. The setup wizard in the next step detects this and prints the install one-liner if they're missing.</p>
+
+    <h4>Windows</h4>
+    <p>Windows SmartScreen will warn when you run an unsigned binary. Click <strong>More info</strong> → <strong>Run anyway</strong> the first time you launch each binary.</p>
+
+    <p>Now skip to <a href="#wizard">section 3 — Run the setup wizard</a>.</p>
+  </div>
+</section>
+
+<section id="path-b">
+  <div class="wrap">
+    <h2>Path B — From npm</h2>
+    <p>Prerequisites: Node.js ≥ 18.17 and npm. Check with <code>node -v</code> and <code>npm -v</code>. If you don't have them, install via <a href="https://github.com/nvm-sh/nvm">nvm</a> on Unix or the <a href="https://nodejs.org/">official Node.js installer</a> on Windows. On macOS / Linux, prefer nvm so the global-install path lands under your home directory rather than <code>/usr/local/</code> (avoids <code>EACCES</code> permission errors).</p>
+
+    <h3>B1. Install globally</h3>
+    <pre><code>npm install -g vaultpilot-mcp</code></pre>
+    <p>This places two executables on your PATH:</p>
+    <ul>
+      <li><code>vaultpilot-mcp</code> — the MCP server</li>
+      <li><code>vaultpilot-mcp-setup</code> — the setup wizard</li>
+    </ul>
+    <p>Linux: if you also want TRON / Solana hardware-signing, install the build toolchain so <code>node-hid</code> can compile during install:</p>
+    <pre><code>sudo apt install libudev-dev build-essential   # Debian / Ubuntu
+sudo dnf install systemd-devel gcc-c++ make    # Fedora</code></pre>
+
+    <h3>B2. Verify the install</h3>
+    <pre><code>which vaultpilot-mcp        # macOS / Linux
+where.exe vaultpilot-mcp    # Windows</code></pre>
+    <p>Both paths should resolve. If not, check <code>npm bin -g</code> is on your PATH.</p>
+    <p>Now go to <a href="#wizard">section 3 — Run the setup wizard</a>.</p>
+  </div>
+</section>
+
+<section id="path-c">
+  <div class="wrap">
+    <h2>Path C — From source</h2>
+    <p>Prerequisites: Node.js ≥ 18.17, npm, git, plus the OS build toolchain listed in Path B (Linux only — macOS includes Xcode CLT, Windows ships MSBuild with current Visual Studio installs).</p>
+
+    <h3>C1. Clone and build</h3>
+    <pre><code>git clone https://github.com/szhygulin/vaultpilot-mcp.git
+cd vaultpilot-mcp
+npm install --legacy-peer-deps
+npm run build</code></pre>
+    <p><code>--legacy-peer-deps</code> is required because the Kamino SDK has a transitive peer-dep nest npm 7+ rejects by default.</p>
+
+    <h3>C2. Run from the source checkout</h3>
+    <p>You have two options for invoking the server:</p>
+    <pre><code># Option 1: run via npm scripts (stays in the repo)
+npm start          # MCP server
+npm run setup      # setup wizard
+
+# Option 2: link globally so you can call from anywhere
+npm link
+# Then `vaultpilot-mcp` and `vaultpilot-mcp-setup` work from any directory.</code></pre>
+    <p><code>npm link</code> is reversible: <code>npm unlink -g vaultpilot-mcp</code> removes the symlink. Useful if you want to test a local fork against your real config without uninstalling the npm-published version.</p>
+
+    <h3>C3. Run the test suite (optional sanity check)</h3>
+    <pre><code>npm test</code></pre>
+    <p>A successful run prints <code>Tests &lt;N&gt; passed</code>. As of v0.6.1 the suite is ~1,000 cases and runs in ~15s.</p>
+    <p>Now go to <a href="#wizard">section 3 — Run the setup wizard</a>.</p>
+  </div>
+</section>
+
+<section id="wizard">
+  <div class="wrap">
+    <h2>3. Run the setup wizard</h2>
+    <p>This is the one mandatory configuration step. It writes <code>~/.vaultpilot-mcp/config.json</code> (or <code>%USERPROFILE%\.vaultpilot-mcp\config.json</code> on Windows) with your RPC providers and optional API keys.</p>
+    <p>How you invoke the wizard depends on which install path you used:</p>
+    <pre><code># Path A — bundled binary (macOS / Linux)
+~/.local/bin/vaultpilot-mcp-setup-&lt;platform&gt;
+
+# Path A — bundled binary (Windows, PowerShell)
+&amp; "$env:LOCALAPPDATA\Programs\vaultpilot-mcp\vaultpilot-mcp-setup-windows-x64.exe"
+
+# Path B — installed via npm
+vaultpilot-mcp-setup
+
+# Path C — from source
+npm run setup</code></pre>
+    <p>The wizard:</p>
+    <ul>
+      <li>Asks what you want to do (read balances / sign EVM / sign Solana / sign TRON) and only prompts for the keys that use case actually needs. Read-only portfolio works with <strong>zero</strong> keys (PublicNode defaults ship out of the box).</li>
+      <li>Detects Claude Desktop / Claude Code / Cursor and offers to add a <code>vaultpilot-mcp</code> entry to each of their MCP-server configs automatically. You don't need to find or edit JSON files.</li>
+      <li>Offers to clone the two companion Claude Code skills (<a href="https://github.com/szhygulin/vaultpilot-skill"><code>vaultpilot-skill</code></a> for signing-time integrity invariants and <a href="https://github.com/szhygulin/vaultpilot-setup-skill"><code>vaultpilot-setup-skill</code></a> for the conversational <code>/setup</code> flow) into <code>~/.claude/skills/</code>.</li>
+    </ul>
+    <p>You can re-run the wizard any time to add or change a key.</p>
+  </div>
+</section>
+
+<section id="verify">
+  <div class="wrap">
+    <h2>4. Verify it works</h2>
+    <p>The setup wizard probably auto-registered VaultPilot with at least one of your MCP clients. Restart the client and try a read-only question:</p>
+    <div class="panel">"Show me my crypto portfolio."</div>
+    <p>If your client knows about VaultPilot, the agent will call <code>get_ledger_status</code> and <code>get_portfolio_summary</code> (or similar) and return results. If the client says it doesn't know about VaultPilot, see <a href="#wiring">Manual MCP-client wiring</a> below.</p>
+    <p>You can also confirm the server itself runs by piping a JSON-RPC request into stdin:</p>
+    <pre><code># Path A — bundled binary
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | \
+  ~/.local/bin/vaultpilot-mcp-&lt;platform&gt; | head -c 200
+
+# Path B — installed via npm
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | \
+  vaultpilot-mcp | head -c 200
+
+# Path C — from source
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | \
+  node dist/index.js | head -c 200</code></pre>
+    <p>A JSON envelope listing tools should print to stdout.</p>
+  </div>
+</section>
+
+<section id="wiring">
+  <div class="wrap">
+    <h2>5. Manual MCP-client wiring (if auto-register didn't run)</h2>
+    <p>If the setup wizard couldn't detect your client, or you skipped the auto-register prompt, add the entry manually. The JSON shape varies slightly per install path:</p>
+    <pre><code>// Path A — bundled binary (use the absolute path to the server binary)
+{
+  "mcpServers": {
+    "vaultpilot-mcp": {
+      "command": "/absolute/path/to/vaultpilot-mcp-&lt;platform&gt;"
+    }
+  }
+}
+
+// Path B — installed via npm (the bin shim is on PATH)
+{
+  "mcpServers": {
+    "vaultpilot-mcp": {
+      "command": "vaultpilot-mcp"
+    }
+  }
+}
+
+// Path C — from source
+{
+  "mcpServers": {
+    "vaultpilot-mcp": {
+      "command": "node",
+      "args": ["/absolute/path/to/vaultpilot-mcp/dist/index.js"]
+    }
+  }
+}</code></pre>
+    <p>Per-client config locations:</p>
+    <table class="compact">
+      <tr><th>Client</th><th>Config path</th></tr>
+      <tr><td>Claude Desktop (macOS)</td><td><code>~/Library/Application Support/Claude/claude_desktop_config.json</code></td></tr>
+      <tr><td>Claude Desktop (Windows)</td><td><code>%APPDATA%\Claude\claude_desktop_config.json</code></td></tr>
+      <tr><td>Claude Desktop (Linux)</td><td><code>~/.config/Claude/claude_desktop_config.json</code></td></tr>
+      <tr><td>Claude Code (user-level)</td><td><code>~/.claude.json</code></td></tr>
+      <tr><td>Cursor (user-level)</td><td><code>~/.cursor/mcp.json</code></td></tr>
+    </table>
+    <p>If the file already has a <code>mcpServers</code> block, <strong>merge</strong> into it — don't overwrite. Always back up the file before editing.</p>
+  </div>
+</section>
+
+<section id="pair">
+  <div class="wrap">
+    <h2>6. Pair Ledger (only if you'll sign transactions)</h2>
+    <p>VaultPilot is self-custodial: it never holds your keys. To sign, your hardware wallet pairs once per chain.</p>
+    <ul>
+      <li><strong>EVM signing</strong> (Ethereum / Arbitrum / Polygon / Base / Optimism via WalletConnect): the agent will tell you to call <code>pair_ledger_live</code> — open Ledger Live on your phone and complete the WC handshake.</li>
+      <li><strong>Solana signing</strong>: plug in your Ledger, open the Solana app (Settings → enable <strong>Allow blind signing</strong> for SPL/MarginFi/Jupiter flows; SOL native sends clear-sign without it), and the agent will call <code>pair_ledger_solana</code>.</li>
+      <li><strong>TRON signing</strong>: plug in your Ledger, open the Tron app, and the agent will call <code>pair_ledger_tron</code>.</li>
+    </ul>
+    <p>Read-only portfolio reads need <strong>none</strong> of this — they just need on-chain data, which the public RPC fallbacks provide.</p>
+  </div>
+</section>
+
+<section id="update">
+  <div class="wrap">
+    <h2>7. Update to a new version</h2>
+
+    <h4>Path A — bundled binary</h4>
+    <ol>
+      <li>Download the new binaries from the <a href="https://github.com/szhygulin/vaultpilot-mcp/releases/latest">latest release page</a>.</li>
+      <li>Replace the old files at the same paths.</li>
+      <li>On macOS, re-run <code>xattr -d com.apple.quarantine</code> (or right-click → Open once each). On Windows, click through SmartScreen once each.</li>
+      <li>Restart your MCP client so it picks up the new binary.</li>
+    </ol>
+
+    <h4>Path B — npm</h4>
+    <pre><code>npm update -g vaultpilot-mcp
+# or for a specific version:
+npm install -g vaultpilot-mcp@&lt;version&gt;</code></pre>
+    <p>Then restart your MCP client.</p>
+
+    <h4>Path C — from source</h4>
+    <pre><code>cd /path/to/vaultpilot-mcp
+git pull --ff-only
+npm install --legacy-peer-deps
+npm run build</code></pre>
+    <p>Your config file at <code>~/.vaultpilot-mcp/config.json</code> is preserved across all three update paths.</p>
+  </div>
+</section>
+
+<section id="uninstall">
+  <div class="wrap">
+    <h2>8. Uninstall</h2>
+
+    <h4>Path A — bundled binary</h4>
+    <pre><code># Remove the binaries
+rm ~/.local/bin/vaultpilot-mcp-* ~/.local/bin/vaultpilot-mcp-setup-*
+# (Windows: delete the files in %LOCALAPPDATA%\Programs\vaultpilot-mcp\)</code></pre>
+
+    <h4>Path B — npm</h4>
+    <pre><code>npm uninstall -g vaultpilot-mcp</code></pre>
+
+    <h4>Path C — from source</h4>
+    <pre><code># If you ran `npm link`:
+npm unlink -g vaultpilot-mcp
+# Then delete the source checkout:
+rm -rf /path/to/vaultpilot-mcp</code></pre>
+
+    <h4>All paths — clean up shared state</h4>
+    <ol>
+      <li>Remove the config: <code>rm -rf ~/.vaultpilot-mcp/</code> (Unix) or delete <code>%USERPROFILE%\.vaultpilot-mcp\</code> (Windows).</li>
+      <li>Remove the <code>vaultpilot-mcp</code> entry from your MCP client's config file (paths in <a href="#wiring">section 5</a>).</li>
+      <li>Optional — remove the companion skills: <code>rm -rf ~/.claude/skills/vaultpilot-{preflight,setup}/</code>.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="troubleshoot">
+  <div class="wrap">
+    <h2>9. Troubleshooting</h2>
+    <p><strong>"Permission denied" on Linux/macOS launch.</strong> You forgot <code>chmod +x</code>. Re-run with the path from section 2.</p>
+    <p><strong>"Apple could not verify..."</strong> macOS Gatekeeper. Right-click → Open, or run the <code>xattr -d com.apple.quarantine</code> one-liner from section 2.</p>
+    <p><strong>"Windows protected your PC"</strong> SmartScreen. Click <strong>More info</strong> → <strong>Run anyway</strong>.</p>
+    <p><strong>Setup wizard hangs at "Pairing Ledger Live..."</strong> The WalletConnect relay timed out. Check your Ledger Live mobile app is open, has internet, and is on a recent build. Hit Ctrl-C and re-run setup with <code>--skip-pairing</code> (you can pair later via <code>pair_ledger_live</code>).</p>
+    <p><strong>MCP client doesn't see <code>vaultpilot-mcp</code>.</strong> Most likely the auto-register didn't catch your client. Verify the JSON config exists at the path in <a href="#wiring">section 5</a> and contains a <code>mcpServers.vaultpilot-mcp</code> entry pointing at the server binary's absolute path. Restart the client after editing.</p>
+    <p><strong>Solana sends fail with "blockhash expired"</strong> on slow Ledger blind-signing. As of v0.6.1, every Solana send is durable-nonce-protected, so this should not happen — if it does, file an issue with the preview output.</p>
+    <p><strong>Linux: TRON / Solana signing returns "permission denied" on USB.</strong> Ledger udev rules aren't installed. Re-run the setup wizard; it detects this and prints the install one-liner. Or install directly from <a href="https://github.com/LedgerHQ/udev-rules">Ledger's repo</a>.</p>
+    <p><strong>Anything else.</strong> File an issue with the <a href="https://github.com/szhygulin/vaultpilot-mcp/issues">vaultpilot-mcp issue tracker</a> including your OS, the binary version (<code>./vaultpilot-mcp-&lt;platform&gt; --version</code>), the failing tool name, and the agent's verbatim output (redact any wallet addresses or hashes you don't want in public logs).</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What's bundled inside the binary</h2>
+    <p>For the technically curious: each binary contains the Node.js 22 runtime, the compiled <code>dist/</code> JS, every npm dependency, and the platform-specific native <code>.node</code> artifacts for <code>node-hid</code>, <code>usb</code>, <code>bufferutil</code>, and <code>utf-8-validate</code>. The binaries are built per-OS via <a href="https://github.com/yao-pkg/pkg"><code>@yao-pkg/pkg</code></a> on a GitHub Actions matrix — see <a href="https://github.com/szhygulin/vaultpilot-mcp/blob/main/.github/workflows/release-binaries.yml"><code>.github/workflows/release-binaries.yml</code></a>. At first launch the runtime extracts the bundled <code>.node</code> files to a platform-specific cache directory (override via <code>PKG_NATIVE_CACHE_PATH</code>).</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="https://github.com/szhygulin/vaultpilot-mcp">vaultpilot-mcp</a>
+      <a href="https://github.com/szhygulin/vaultpilot-skill">vaultpilot-skill</a>
+      <a href="https://www.npmjs.com/package/vaultpilot-mcp">npm</a>
+      <a href="https://github.com/szhygulin/vaultpilot-mcp/blob/main/SECURITY.md">Security model</a>
+      <a href="https://github.com/szhygulin/vaultpilot-mcp/issues">Issues</a>
+    </div>
+    <div class="fineprint">MIT licensed. Self-custodial — keys never leave your hardware wallet. Not affiliated with Ledger SAS or Anthropic.</div>
+  </div>
+</footer>
+
+</body>
+</html>
