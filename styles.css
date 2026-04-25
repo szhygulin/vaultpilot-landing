@@ -1,15 +1,26 @@
 :root {
-  --bg: #0b0d10;
-  --bg-elev: #14171c;
+  /* Palette tuned to harmonize with the shield logo (slate base + emerald accent). */
+  --bg: #0a0f1a;
+  --bg-elev: #121a26;
+  --bg-glow: #0e1722;
   --fg: #e9edf2;
   --fg-dim: #9aa4b2;
-  --accent: #f5b51c;
-  --accent-dim: #ad7c00;
-  --rule: #232831;
-  --code-bg: #0f1216;
-  --good: #3ec46a;
+  --accent: #10b981;       /* emerald — primary, matches logo checkmark */
+  --accent-bright: #34d399;
+  --accent-dim: #059669;
+  --accent-soft: rgba(16, 185, 129, 0.15);
+  --rule: #1f2937;
+  --code-bg: #0d1420;
+  --good: #34d399;
   --bad: #e25656;
   --max: 980px;
+}
+body {
+  /* Subtle radial wash echoing the shield's gradient — keeps the page from feeling flat without competing with the logo. */
+  background:
+    radial-gradient(ellipse at top, rgba(16,185,129,0.08), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
 }
 * { box-sizing: border-box; }
 html, body {
@@ -50,21 +61,51 @@ h4 { font-size: 1rem; margin: 20px 0 6px; color: var(--fg-dim); font-weight: 600
 p { margin: 0 0 16px; }
 .lede { font-size: 1.18rem; color: var(--fg-dim); max-width: 640px; }
 
-/* Top nav (used on subpages) */
+/* Top nav (used on every page) */
 nav.top {
   border-bottom: 1px solid var(--rule);
-  padding: 18px 0;
+  padding: 14px 0;
   font-size: 0.92rem;
+  background: rgba(10, 15, 26, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
-nav.top .row { display: flex; gap: 24px; align-items: center; }
+nav.top .row { display: flex; gap: 22px; align-items: center; }
 nav.top a { color: var(--fg-dim); }
 nav.top a:hover { color: var(--fg); text-decoration: none; }
-nav.top a.brand { color: var(--fg); font-weight: 700; letter-spacing: -0.01em; }
+nav.top a.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--fg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 1rem;
+}
+nav.top a.brand img { width: 28px; height: 28px; display: block; }
 nav.top a.brand:hover { color: var(--accent); }
 nav.top .grow { flex: 1; }
 
 /* Hero */
-header.hero { padding: 96px 0 64px; }
+header.hero { padding: 80px 0 64px; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 40px;
+  align-items: center;
+}
+.hero-grid .logo-mark {
+  width: 180px;
+  height: 180px;
+  filter: drop-shadow(0 12px 32px rgba(16, 185, 129, 0.25));
+}
+@media (max-width: 700px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 24px; text-align: left; }
+  .hero-grid .logo-mark { width: 96px; height: 96px; }
+}
 .badge {
   display: inline-block;
   font-size: 0.78rem;
@@ -72,6 +113,7 @@ header.hero { padding: 96px 0 64px; }
   text-transform: uppercase;
   color: var(--accent);
   border: 1px solid var(--accent-dim);
+  background: var(--accent-soft);
   padding: 4px 10px;
   border-radius: 999px;
   margin-bottom: 20px;
@@ -85,8 +127,8 @@ header.hero { padding: 96px 0 64px; }
   border: 1px solid transparent;
   transition: background 0.15s, border-color 0.15s;
 }
-.btn-primary { background: var(--accent); color: #1a1402; }
-.btn-primary:hover { background: #ffc83a; text-decoration: none; }
+.btn-primary { background: var(--accent); color: #04150e; }
+.btn-primary:hover { background: var(--accent-bright); text-decoration: none; }
 .btn-secondary { background: transparent; border-color: var(--rule); color: var(--fg); }
 .btn-secondary:hover { border-color: var(--fg-dim); text-decoration: none; }
 
@@ -122,6 +164,7 @@ header.hero { padding: 96px 0 64px; }
   border-radius: 10px;
   padding: 20px 22px;
 }
+.flow .step:hover { border-color: var(--accent-dim); transform: translateY(-2px); transition: all 0.2s; }
 .flow .step .num {
   color: var(--accent);
   font-family: ui-monospace, monospace;
