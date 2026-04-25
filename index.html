@@ -25,6 +25,7 @@
     </a>
     <span class="grow"></span>
     <a href="install.html">Install</a>
+    <a href="#contact">Contact</a>
     <a href="https://github.com/szhygulin/vaultpilot-mcp">GitHub</a>
     <a href="https://www.npmjs.com/package/vaultpilot-mcp">npm</a>
   </div>
@@ -48,6 +49,19 @@
   </div>
 </header>
 
+<section id="demo">
+  <div class="wrap">
+    <h2>See it in action</h2>
+    <p>An end-to-end Solana send: the agent prepares the transaction, you match the message hash on the Ledger device, and approve. Whatever the agent claims it's doing, the Ledger screen is the source of truth.</p>
+    <div class="video-frame">
+      <video controls preload="metadata" playsinline>
+        <source src="solana.mp4" type="video/mp4">
+        Your browser doesn't support inline video. <a href="solana.mp4">Download the demo (MP4, 23 MB)</a>.
+      </video>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="wrap">
     <h2>Why this exists</h2>
@@ -68,28 +82,19 @@
       <div class="step">
         <div class="num">02 / PREPARE</div>
         <h3>Server builds an unsigned tx</h3>
-        <p>VaultPilot MCP prepares the transaction, decodes its calldata, and emits a verification block: a one-line action summary, the function being called, every argument, and a payload hash you'll see again on-device.</p>
+        <p>VaultPilot MCP prepares the transaction bytes, computes a payload-hash fingerprint, and decodes the calldata via its local ABI registry. Returns the structured view (function, arguments) plus an opaque handle.</p>
       </div>
       <div class="step">
-        <div class="num">03 / APPROVE</div>
+        <div class="num">03 / CHECK</div>
+        <h3>Independent verification</h3>
+        <p>The agent cross-checks the function selector against 4byte.directory, re-derives the pre-sign hash, and renders a verification block. A mismatch on any layer aborts before the device prompt — the swiss-knife decoder URL is included for an out-of-band browser check.</p>
+      </div>
+      <div class="step">
+        <div class="num">04 / APPROVE</div>
         <h3>You sign on Ledger</h3>
-        <p>EVM goes to Ledger Live over WalletConnect; TRON and Solana go to a directly-connected Ledger over USB. The device clear-signs known protocols, blind-signs everything else with a hash you match against the chat.</p>
+        <p>EVM goes to Ledger Live over WalletConnect; TRON and Solana go to a directly-connected Ledger over USB. The device clear-signs known protocols, blind-signs everything else with a hash that must match what the agent showed you.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="demo">
-  <div class="wrap">
-    <h2>See it in action</h2>
-    <p>An end-to-end Solana send: the agent prepares the transaction, you match the message hash on the Ledger device, and approve. Whatever the agent claims it's doing, the Ledger screen is the source of truth.</p>
-    <div class="video-frame">
-      <video controls preload="metadata" playsinline>
-        <source src="solana.mp4" type="video/mp4">
-        Your browser doesn't support inline video. <a href="solana.mp4">Download the demo (MP4, 23 MB)</a>.
-      </video>
-    </div>
-    <p class="video-caption">Solana SPL transfer demo · ~23 MB</p>
   </div>
 </section>
 
@@ -160,10 +165,37 @@ vaultpilot-mcp-setup</code></pre>
   </div>
 </section>
 
+<section id="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <p>Questions, security disclosures, integration requests — drop a line.</p>
+    <form class="contact-form" action="https://formsubmit.co/s.zhygulin@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="VaultPilot site contact">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://vaultpilot-mcp.ai/?contact=sent">
+      <label>
+        Name
+        <input type="text" name="name" required maxlength="120" autocomplete="name">
+      </label>
+      <label>
+        Email
+        <input type="email" name="email" required maxlength="200" autocomplete="email">
+      </label>
+      <label>
+        Message
+        <textarea name="message" required maxlength="5000"></textarea>
+      </label>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <div class="links">
       <a href="install.html">Install</a>
+      <a href="#contact">Contact</a>
       <a href="https://github.com/szhygulin/vaultpilot-mcp">vaultpilot-mcp</a>
       <a href="https://github.com/szhygulin/vaultpilot-skill">vaultpilot-skill</a>
       <a href="https://www.npmjs.com/package/vaultpilot-mcp">npm</a>

@@ -151,13 +151,14 @@ header.hero { padding: 80px 0 64px; }
 }
 .callout strong { color: var(--fg); }
 
-/* How-it-works flow (home) */
+/* How-it-works flow (home) — 4 steps */
 .flow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
   margin-top: 28px;
 }
+@media (max-width: 1000px) { .flow { grid-template-columns: repeat(2, 1fr); } }
 .flow .step {
   background: var(--bg-elev);
   border: 1px solid var(--rule);
@@ -243,10 +244,43 @@ ul.defenses li strong { color: var(--fg); font-weight: 600; }
   border-radius: 6px;
   background: #000;
 }
-.video-caption {
-  margin-top: 14px;
+/* Contact form */
+.contact-form {
+  display: grid;
+  gap: 14px;
+  max-width: 560px;
+  margin-top: 24px;
+}
+.contact-form label {
+  display: grid;
+  gap: 6px;
   color: var(--fg-dim);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+}
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.contact-form textarea { min-height: 140px; resize: vertical; line-height: 1.5; }
+.contact-form button {
+  justify-self: start;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 /* TOC for the install page */
