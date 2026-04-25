@@ -77,22 +77,22 @@
       <div class="step">
         <div class="num">01 / READ</div>
         <h3>Agent reads on-chain state</h3>
-        <p>Portfolio, lending positions, staking, swap quotes — all read-only via your configured RPCs. No keys involved.</p>
+        <p>Portfolio totals, lending positions, staking balances, LP positions, swap quotes across EVM, TRON, and Solana — all read-only via your configured RPCs. No signatures, no key access.</p>
       </div>
       <div class="step">
         <div class="num">02 / PREPARE</div>
         <h3>Server builds an unsigned tx</h3>
-        <p>VaultPilot MCP prepares the transaction bytes, computes a payload-hash fingerprint, and decodes the calldata via its local ABI registry. Returns the structured view (function, arguments) plus an opaque handle.</p>
+        <p>VaultPilot MCP prepares the transaction bytes, computes a payload-hash fingerprint, and decodes the calldata via its local ABI registry. Returns the structured view plus an opaque handle.</p>
       </div>
       <div class="step">
         <div class="num">03 / CHECK</div>
         <h3>Independent verification</h3>
-        <p>The agent cross-checks the function selector against 4byte.directory, re-derives the pre-sign hash, and renders a verification block. A mismatch on any layer aborts before the device prompt — the swiss-knife decoder URL is included for an out-of-band browser check.</p>
+        <p>The agent cross-checks the function selector against 4byte.directory, re-derives the pre-sign hash, and renders a verification block. Any layer mismatch aborts before the device prompt.</p>
       </div>
       <div class="step">
         <div class="num">04 / APPROVE</div>
         <h3>You sign on Ledger</h3>
-        <p>EVM goes to Ledger Live over WalletConnect; TRON and Solana go to a directly-connected Ledger over USB. The device clear-signs known protocols, blind-signs everything else with a hash that must match what the agent showed you.</p>
+        <p>EVM via Ledger Live over WalletConnect; TRON and Solana via direct USB. The device clear-signs known protocols and blind-signs the rest with a hash matching the agent's preview.</p>
       </div>
     </div>
   </div>
