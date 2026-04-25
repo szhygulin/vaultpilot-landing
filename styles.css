@@ -184,6 +184,28 @@ ul.defenses li::before {
 ul.defenses li strong { color: var(--fg); font-weight: 600; }
 @media (max-width: 700px) { ul.defenses { grid-template-columns: 1fr; } }
 
+/* Video embed */
+.video-frame {
+  margin-top: 24px;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 6px;
+  overflow: hidden;
+}
+.video-frame video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  background: #000;
+}
+.video-caption {
+  margin-top: 14px;
+  color: var(--fg-dim);
+  font-size: 0.92rem;
+}
+
 /* TOC for the install page */
 ul.toc {
   list-style: none;
