@@ -117,7 +117,7 @@
 
 <section>
   <div class="wrap">
-    <h2>Coverage</h2>
+    <h2>Protocol coverage</h2>
     <table class="coverage">
       <tr>
         <th>Chains</th>
@@ -159,7 +159,7 @@ vaultpilot-mcp-setup</code></pre>
 
 <section>
   <div class="wrap">
-    <h2>Honest limits</h2>
+    <h2>Security limits</h2>
     <p>Hardware-verified does not mean infallible. VaultPilot's threat model is documented openly in <a href="https://github.com/szhygulin/vaultpilot-mcp/blob/main/SECURITY.md">SECURITY.md</a>, including the cases the layered defenses can degrade against — coordinated agent + server compromise on a blind-sign chain, a fully owned Ledger Live host swapping the WalletConnect session, oracle drift on lending markets. The point of writing it down is that you can decide what you trust before approving a 6-figure send, not after.</p>
     <p>Software wallets and Ledger live in different security tiers. Software-wallet support is on the roadmap (MetaMask Mobile via WalletConnect) and will be clearly labelled as the weaker anchor — the existing pre-sign defenses still apply, but the on-device cryptographic binding does not.</p>
   </div>
