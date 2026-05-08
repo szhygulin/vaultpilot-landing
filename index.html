@@ -30,6 +30,75 @@
 <link rel="apple-touch-icon" href="vaultpilot-v2-circuit.png">
 <meta name="theme-color" content="#10b981">
 <link rel="stylesheet" href="styles.css">
+<style>
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+  }
+  @media (max-width: 760px) {
+    .team-grid { grid-template-columns: 1fr; }
+  }
+  .team-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .team-photo {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .team-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .team-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0;
+  }
+  .team-title {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #10b981;
+    margin: 0;
+  }
+  .team-linkedin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    margin-top: auto;
+  }
+  .team-linkedin:hover {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.08);
+  }
+  .team-linkedin svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+</style>
 
 <!-- Cloudflare Web Analytics — privacy-respecting, no cookies, no consent banner needed -->
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87253c60d56d4036a09b2410ffcee745"}'></script>
@@ -221,6 +290,44 @@ vaultpilot-mcp-setup</code></pre>
     <h2>Residual risks</h2>
     <p>Hardware-verified does not mean infallible. VaultPilot's threat model is publicly documented in <a href="https://github.com/szhygulin/vaultpilot-mcp/blob/main/SECURITY.md">SECURITY.md</a>, including the residual risks current defenses cannot fully mitigate — coordinated agent + server compromise on a blind-sign chain, a fully owned Ledger Live host swapping the WalletConnect session, oracle drift on lending markets. The point of naming them is that you can decide what you trust before approving a 6-figure send, not after.</p>
     <p>Software wallets and Ledger live in different security tiers. Software-wallet support is on the roadmap (MetaMask Mobile via WalletConnect) and will be clearly labelled as the weaker anchor — the existing pre-sign defenses still apply, but the on-device cryptographic binding does not.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Team</h2>
+    <div class="team-grid">
+      <article class="team-card">
+        <img class="team-photo" src="https://media.licdn.com/dms/image/v2/D4D03AQGh-8BROewXmQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1671723067049?e=1779926400&amp;v=beta&amp;t=ZfkI_3MDY3G_ha7oy6uhVE7FpM5V5YS9K3R98boWTkM" alt="Slava Zhygulin" loading="lazy">
+        <div class="team-meta">
+          <p class="team-title">CEO</p>
+          <h3 class="team-name">Slava Zhygulin</h3>
+        </div>
+        <a class="team-linkedin" href="https://www.linkedin.com/in/szhygulin/" target="_blank" rel="noopener noreferrer" aria-label="Slava Zhygulin on LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+        </a>
+      </article>
+      <article class="team-card">
+        <img class="team-photo" src="https://media.licdn.com/dms/image/v2/D4E03AQEijV-6VGhhgQ/profile-displayphoto-crop_800_800/B4EZ1JyshxHsAI-/0/1775059522142?e=1779926400&amp;v=beta&amp;t=tMOjzFB_sTVbpY1Ra67tEnZjyBvZEY5d0vwZGZtzCLM" alt="Rostyslav Shvets" loading="lazy">
+        <div class="team-meta">
+          <p class="team-title">CPO</p>
+          <h3 class="team-name">Rostyslav Shvets</h3>
+        </div>
+        <a class="team-linkedin" href="https://www.linkedin.com/in/r-shvets/" target="_blank" rel="noopener noreferrer" aria-label="Rostyslav Shvets on LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+        </a>
+      </article>
+      <article class="team-card">
+        <img class="team-photo" src="https://media.licdn.com/dms/image/v2/D5603AQF6ucFeLz-lhQ/profile-displayphoto-crop_800_800/B56ZyLWGJtIcAM-/0/1771864353516?e=1779926400&amp;v=beta&amp;t=N41g2YeLKXEvLrpFTzj6WRBeOVWVdmHrcRdW_eCxyrY" alt="Vladyslav Shvets" loading="lazy">
+        <div class="team-meta">
+          <p class="team-title">COO</p>
+          <h3 class="team-name">Vladyslav Shvets</h3>
+        </div>
+        <a class="team-linkedin" href="https://www.linkedin.com/in/vladyslav-shvets/" target="_blank" rel="noopener noreferrer" aria-label="Vladyslav Shvets on LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+        </a>
+      </article>
+    </div>
   </div>
 </section>
 
